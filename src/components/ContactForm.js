@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-const ContactForm = () => {
+const ContactForm = ({ history, match }) => {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts);
+  const contactId = match.params.id;
+
+  useEffect(() => {
+    if (contactId) {
+      const contact = contacts.find((contact) => contact.id === contactId);
+      if (contact) {
+        setFullName(contact.fullName);
+        setPhone(contact.phone);
+        setEmail(contact.email);
+      }
+    }
+  }, [contactId, contacts]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,17 +28,25 @@ const ContactForm = () => {
     }
 
     const newContact = {
-      id: new Date().getTime().toString(),
+      id: contactId || new Date().getTime().toString(),
       fullName,
       phone,
       email,
     };
 
-    dispatch({ type: 'ADD_CONTACT', payload: newContact });
+    if (contactId) {
+      dispatch({ type: 'EDIT_CONTACT', payload: newContact });
+    } else {
+      dispatch({ type: 'ADD_CONTACT', payload: newContact });
+    }
 
     setFullName('');
     setPhone('');
     setEmail('');
+
+    if (!contactId) {
+      history.push('/');
+    }
   };
 
   return (
@@ -63,3 +84,4 @@ const ContactForm = () => {
 };
 
 export default ContactForm;
+

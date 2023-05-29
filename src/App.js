@@ -2,10 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ContactList from './components/ContactList';
 import ContactForm from './components/ContactForm';
-import EditContactForm from './components/ContactForm';
+import EditContactForm from './components/EditContactForm';
 
 const App = () => {
-
   return (
     <Router>
       <div>
